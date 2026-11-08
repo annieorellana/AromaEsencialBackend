@@ -1,0 +1,178 @@
+[
+  {
+    "codigo": "PF-016",
+    "nombre": "Dark Cedar",
+    "categoria": "Hombre",
+    "precio": 96000,
+    "stock": 14,
+    "stockCritico": 5,
+    "descripcion": "Notas amaderadas con cacao, musk y un acabado elegante.",
+    "imagen": "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&w=900&q=80",
+    "oferta": true
+  },
+  {
+    "codigo": "PF-001",
+    "nombre": "Classic Wood",
+    "categoria": "Hombre",
+    "precio": 58000,
+    "stock": 24,
+    "stockCritico": 5,
+    "descripcion": "Notas de cedro y sándalo con un aroma limpio y versátil.",
+    "imagen": "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&w=900&q=80",
+    "oferta": false
+  },
+  {
+    "codigo": "PF-002",
+    "nombre": "Urban Edge",
+    "categoria": "Hombre",
+    "precio": 62000,
+    "stock": 18,
+    "stockCritico": 5,
+    "descripcion": "Frescura especiada para un estilo moderno y sobrio.",
+    "imagen": "https://images.unsplash.com/photo-1541643600914-78b084683601?auto=format&fit=crop&w=900&q=80",
+    "oferta": false
+  },
+  {
+    "codigo": "PF-003",
+    "nombre": "Silver Musk",
+    "categoria": "Hombre",
+    "precio": 68000,
+    "stock": 12,
+    "stockCritico": 5,
+    "descripcion": "Un aroma limpio, elegante y equilibrado para todo día.",
+    "imagen": "https://images.unsplash.com/photo-1528740561666-dc2479dc08ab?auto=format&fit=crop&w=900&q=80",
+    "oferta": false
+  },
+  {
+    "codigo": "PF-004",
+    "nombre": "Night Move",
+    "categoria": "Hombre",
+    "precio": 72000,
+    "stock": 9,
+    "stockCritico": 5,
+    "descripcion": "Especias suaves y madera con un acabado intenso.",
+    "imagen": "https://images.unsplash.com/photo-1523293182086-7651a899d37f?auto=format&fit=crop&w=900&q=80",
+    "oferta": true
+  },
+  {
+    "codigo": "PF-005",
+    "nombre": "Cedar Luxe",
+    "categoria": "Hombre",
+    "precio": 79000,
+    "stock": 4,
+    "stockCritico": 5,
+    "descripcion": "Un perfume sofisticado con notas cálidas y persistentes.",
+    "imagen": "https://images.unsplash.com/photo-1617897903246-719242758050?auto=format&fit=crop&w=900&q=80",
+    "oferta": false
+  },
+  {
+    "codigo": "PF-006",
+    "nombre": "Velvet Bloom",
+    "categoria": "Mujer",
+    "precio": 54000,
+    "stock": 20,
+    "stockCritico": 5,
+    "descripcion": "Floral suave con notas de rosa y vainilla.",
+    "imagen": "/images/perfumes/velvet-bloom.png",
+    "oferta": true
+  },
+  {
+    "codigo": "PF-007",
+    "nombre": "Rose Aura",
+    "categoria": "Mujer",
+    "precio": 61000,
+    "stock": 15,
+    "stockCritico": 5,
+    "descripcion": "Notas florales blancas con un brillo romántico.",
+    "imagen": "/images/perfumes/rose-aura.png",
+    "oferta": false
+  },
+  {
+    "codigo": "PF-008",
+    "nombre": "Golden Petal",
+    "categoria": "Mujer",
+    "precio": 67000,
+    "stock": 10,
+    "stockCritico": 5,
+    "descripcion": "Cálido, femenino y con notas florales luminosas.",
+    "imagen": "/images/perfumes/golden-petal.png",
+    "oferta": false
+  },
+  {
+    "codigo": "PF-009",
+    "nombre": "Blush Dream",
+    "categoria": "Mujer",
+    "precio": 71000,
+    "stock": 7,
+    "stockCritico": 5,
+    "descripcion": "Una mezcla dulce y sofisticada para la vida cotidiana.",
+    "imagen": "/images/perfumes/blush-dream.png",
+    "oferta": false
+  },
+  {
+    "codigo": "PF-010",
+    "nombre": "Peony Glow",
+    "categoria": "Mujer",
+    "precio": 78000,
+    "stock": 3,
+    "stockCritico": 5,
+    "descripcion": "Perfume floral con un toque ligero y seductor.",
+    "imagen": "/images/perfumes/peony-glow.png",
+    "oferta": true
+  },
+  {
+    "codigo": "PF-011",
+    "nombre": "Citrus Muse",
+    "categoria": "Unisex",
+    "precio": 49000,
+    "stock": 22,
+    "stockCritico": 5,
+    "descripcion": "Frescura cítrica y herbal para un estilo vibrante.",
+    "imagen": "/images/perfumes/citrus-muse.png",
+    "oferta": true
+  },
+  {
+    "codigo": "PF-012",
+    "nombre": "Velvet Night",
+    "categoria": "Unisex",
+    "precio": 57000,
+    "stock": 16,
+    "stockCritico": 5,
+    "descripcion": "Vainilla, madera y especias para un acabado cálido.",
+    "imagen": "/images/perfumes/velvet-night.png",
+    "oferta": false
+  },
+  {
+    "codigo": "PF-013",
+    "nombre": "Soft Grove",
+    "categoria": "Unisex",
+    "precio": 63000,
+    "stock": 11,
+    "stockCritico": 5,
+    "descripcion": "Notas verdes y musgo para una experiencia fresca.",
+    "imagen": "/images/perfumes/soft-grove.png",
+    "oferta": false
+  },
+  {
+    "codigo": "PF-014",
+    "nombre": "Amber Flow",
+    "categoria": "Unisex",
+    "precio": 69000,
+    "stock": 6,
+    "stockCritico": 5,
+    "descripcion": "Fragancia elegante con ámbar, musk y madera premium.",
+    "imagen": "/images/perfumes/amber-flow.png",
+    "oferta": false
+  },
+  {
+    "codigo": "PF-015",
+    "nombre": "Pure Calm",
+    "categoria": "Unisex",
+    "precio": 74000,
+    "stock": 2,
+    "stockCritico": 5,
+    "descripcion": "Una fragancia ligera con un dejo fresco y sereno.",
+    "imagen": "/images/perfumes/pure-calm.png",
+    "oferta": false
+  }
+]
