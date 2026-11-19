@@ -1,50 +1,251 @@
+
 package cl.duoc.aromaesencial.config;
+
+import cl.duoc.aromaesencial.security.JwtAuthenticationFilter;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import org.springframework.http.HttpMethod;
+
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
  * ============================================================
- *  CONFIGURACIÓN DE SEGURIDAD - BASE TEMPORAL (Parte 1)
+ * CONFIGURACION DE SEGURIDAD - AROMAESENCIAL
+ * INTEGRANTE B: AUTENTICACION Y AUTORIZACION
  * ============================================================
- * Por ahora TODO está permitido (permitAll) para que las Partes 2 y 3 puedan desarrollar y probar sus
- * endpoints en Swagger sin token.
  *
- * La Parte 4 (autenticación/JWT) debe reemplazar la regla {@code anyRequest().permitAll()} por:
- *   - rutas públicas: /api/v1/auth/**, GET /api/v1/productos/**, GET /api/v1/categorias/**, Swagger
- *   - ADMINISTRADOR: acceso total
- *   - VENDEDOR: solo GET de productos y GET de boletas
- *   - CLIENTE: solo tienda (crear/consultar sus propias boletas)
- * y agregar el filtro JWT antes de UsernamePasswordAuthenticationFilter.
+ * Seguridad implementada mediante Spring Security y JWT.
  *
- * Ya están listos: CORS, sesión sin estado (stateless), CSRF desactivado (API con token),
- * PasswordEncoder (BCrypt) y &#64;EnableMethodSecurity para usar &#64;PreAuthorize en los controladores.
+ * - Login, registro, refresh y logout publicos.
+ * - Catalogo de productos y categorias de lectura publica.
+ * - Gestion de productos, categorias y usuarios:
+ *   exclusiva del ADMINISTRADOR.
+ * - Boletas protegidas segun el rol del usuario.
+ * - Sesiones sin estado (STATELESS).
+ * - Contrasenas cifradas mediante BCrypt.
+ *
+ * IMPORTANTE:
+ * Las validaciones de propiedad de boletas deben realizarse
+ * tambien en el backend para impedir accesos entre clientes.
  */
+
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
 
+    // ======================================
+    // FILTRO DE AUTENTICACION JWT
+    // ======================================
+
+    private final JwtAuthenticationFilter jwtFilter;
+
+    public SecurityConfig(
+            JwtAuthenticationFilter jwtFilter) {
+
+        this.jwtFilter = jwtFilter;
+    }
+
+    // ======================================
+    // CONFIGURACION DE SEGURIDAD HTTP
+    // ======================================
+
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(
+            HttpSecurity http) throws Exception {
+
         http
-                .cors(Customizer.withDefaults())
-                .csrf(AbstractHttpConfigurer::disable)
-                .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(auth -> auth
-                        // TODO (Parte 4): reemplazar por reglas reales por rol + filtro JWT
-                        .anyRequest().permitAll());
+            .cors(Customizer.withDefaults())
+
+            // API REST con JWT.
+            // Revisar proteccion CSRF de endpoints
+            // que utilizan cookies HttpOnly.
+            .csrf(AbstractHttpConfigurer::disable)
+
+            // No mantener sesiones HTTP
+            .sessionManagement(session ->
+                session.sessionCreationPolicy(
+                    SessionCreationPolicy.STATELESS
+                )
+            )
+
+            // ==================================
+            // AUTORIZACION POR RUTAS
+            // ==================================
+
+            .authorizeHttpRequests(auth -> auth
+
+                // ==============================
+                // AUTENTICACION
+                // ==============================
+
+                .requestMatchers(
+                    "/api/v1/auth/**"
+                ).permitAll()
+
+                // ==============================
+                // SWAGGER
+                // ==============================
+
+                .requestMatchers(
+                    "/swagger-ui/**",
+                    "/swagger-ui.html",
+                    "/v3/api-docs/**"
+                ).permitAll()
+
+                // ==============================
+                // PRODUCTOS
+                // ==============================
+
+                // Stock critico: ADMINISTRADOR
+                .requestMatchers(
+                    HttpMethod.GET,
+                    "/api/v1/productos/stock-critico"
+                ).hasRole("ADMINISTRADOR")
+
+                // Catalogo publico: solo GET
+                .requestMatchers(
+                    HttpMethod.GET,
+                    "/api/v1/productos",
+                    "/api/v1/productos/**"
+                ).permitAll()
+
+                // Crear productos
+                .requestMatchers(
+                    HttpMethod.POST,
+                    "/api/v1/productos",
+                    "/api/v1/productos/**"
+                ).hasRole("ADMINISTRADOR")
+
+                // Modificar productos
+                .requestMatchers(
+                    HttpMethod.PUT,
+                    "/api/v1/productos/**"
+                ).hasRole("ADMINISTRADOR")
+
+                // Eliminar productos
+                .requestMatchers(
+                    HttpMethod.DELETE,
+                    "/api/v1/productos/**"
+                ).hasRole("ADMINISTRADOR")
+
+                // ==============================
+                // CATEGORIAS
+                // ==============================
+
+                // Consultar categorias: publico
+                .requestMatchers(
+                    HttpMethod.GET,
+                    "/api/v1/categorias",
+                    "/api/v1/categorias/**"
+                ).permitAll()
+
+                // Crear categorias
+                .requestMatchers(
+                    HttpMethod.POST,
+                    "/api/v1/categorias",
+                    "/api/v1/categorias/**"
+                ).hasRole("ADMINISTRADOR")
+
+                // Modificar categorias
+                .requestMatchers(
+                    HttpMethod.PUT,
+                    "/api/v1/categorias/**"
+                ).hasRole("ADMINISTRADOR")
+
+                // Eliminar categorias
+                .requestMatchers(
+                    HttpMethod.DELETE,
+                    "/api/v1/categorias/**"
+                ).hasRole("ADMINISTRADOR")
+
+                // ==============================
+                // USUARIOS
+                // ==============================
+
+                // Gestion exclusiva del administrador
+                .requestMatchers(
+                    "/api/v1/usuarios",
+                    "/api/v1/usuarios/**"
+                ).hasRole("ADMINISTRADOR")
+
+                // ==============================
+                // BOLETAS / ORDENES
+                // ==============================
+
+                // Crear boleta:
+                // ADMINISTRADOR y CLIENTE
+                .requestMatchers(
+                    HttpMethod.POST,
+                    "/api/v1/boletas"
+                ).hasAnyRole(
+                    "ADMINISTRADOR",
+                    "CLIENTE"
+                )
+
+                // Listar y consultar boletas:
+                // ADMINISTRADOR y VENDEDOR pueden consultar todas.
+                // CLIENTE solo puede consultar sus propias boletas.
+                // BoletaSecurityService valida la propiedad.
+                .requestMatchers(
+                    HttpMethod.GET,
+                    "/api/v1/boletas",
+                    "/api/v1/boletas/**"
+                ).hasAnyRole(
+                    "ADMINISTRADOR",
+                    "VENDEDOR",
+                    "CLIENTE"
+                )
+
+                // Cambiar estado de boleta:
+                // solo ADMINISTRADOR
+                .requestMatchers(
+                    HttpMethod.PATCH,
+                    "/api/v1/boletas/*/estado"
+                ).hasRole("ADMINISTRADOR")
+
+                // Bloquear otras operaciones
+                // sobre boletas no autorizadas
+                .requestMatchers(
+                    "/api/v1/boletas",
+                    "/api/v1/boletas/**"
+                ).denyAll()
+
+                // ==============================
+                // RESTO DE ENDPOINTS
+                // ==============================
+
+                .anyRequest().authenticated()
+            )
+
+            // ==================================
+            // ACTIVAR FILTRO JWT
+            // ==================================
+
+            .addFilterBefore(
+                jwtFilter,
+                UsernamePasswordAuthenticationFilter.class
+            );
+
         return http.build();
     }
+
+    // ======================================
+    // CIFRADO DE CONTRASENAS
+    // ======================================
 
     @Bean
     public PasswordEncoder passwordEncoder() {
