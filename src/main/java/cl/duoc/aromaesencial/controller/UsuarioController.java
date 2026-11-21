@@ -1,52 +1,78 @@
-
 package cl.duoc.aromaesencial.controller;
-
-import cl.duoc.aromaesencial.model.Usuario;
-import cl.duoc.aromaesencial.repository.UsuarioRepository;
-
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
+import cl.duoc.aromaesencial.config.ApiPaths;
+import cl.duoc.aromaesencial.dto.UsuarioRequest;
+import cl.duoc.aromaesencial.dto.UsuarioResponse;
+import cl.duoc.aromaesencial.service.UsuarioService;
+
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
+
 @RestController
-@RequestMapping("/api/v1/usuarios")
+@RequestMapping(ApiPaths.USUARIOS)
+@Validated
+@PreAuthorize("hasRole('ADMINISTRADOR')")
 public class UsuarioController {
 
-    private final UsuarioRepository usuarioRepository;
+    private final UsuarioService usuarioService;
 
-    public UsuarioController(
-            UsuarioRepository usuarioRepository) {
-        this.usuarioRepository = usuarioRepository;
+    public UsuarioController(UsuarioService usuarioService) {
+        this.usuarioService = usuarioService;
     }
 
+    // GET: LISTAR USUARIOS
     @GetMapping
-    @PreAuthorize("hasRole('ADMINISTRADOR')")
-    public ResponseEntity<List<UsuarioResumen>> listarUsuarios() {
+    public ResponseEntity<List<UsuarioResponse>> listar() {
 
-        List<UsuarioResumen> usuarios =
-                usuarioRepository.findAll()
-                    .stream()
-                    .map(u -> new UsuarioResumen(
-                            u.getId(),
-                            u.getNombre(),
-                            u.getApellido(),
-                            u.getCorreo(),
-                            u.getRol().name(),
-                            u.getActivo()
-                    ))
-                    .toList();
-
-        return ResponseEntity.ok(usuarios);
+        return ResponseEntity.ok(usuarioService.listar());
     }
 
-    public record UsuarioResumen(
-            Long id,
-            String nombre,
-            String apellido,
-            String correo,
-            String rol,
-            Boolean activo
-    ) {}
+    // GET: BUSCAR POR ID
+    @GetMapping("/{id}")
+    public ResponseEntity<UsuarioResponse> buscarPorId(
+            @PathVariable @Positive Long id) {
+
+        return ResponseEntity.ok(
+                usuarioService.buscarPorId(id)
+        );
+    }
+
+    // POST: CREAR USUARIO
+    @PostMapping
+    public ResponseEntity<UsuarioResponse> crear(
+            @Valid @RequestBody UsuarioRequest request) {
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(usuarioService.crear(request));
+    }
+
+    // PUT: ACTUALIZAR USUARIO
+    @PutMapping("/{id}")
+    public ResponseEntity<UsuarioResponse> actualizar(
+            @PathVariable @Positive Long id,
+            @Valid @RequestBody UsuarioRequest request) {
+
+        return ResponseEntity.ok(
+                usuarioService.actualizar(id, request)
+        );
+    }
+
+    // DELETE: ELIMINAR USUARIO
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> eliminar(
+            @PathVariable @Positive Long id) {
+
+        usuarioService.eliminar(id);
+
+        return ResponseEntity.noContent().build();
+    }
 }

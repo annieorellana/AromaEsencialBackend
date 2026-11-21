@@ -17,3 +17,10 @@ target/
 # SO
 .DS_Store
 Thumbs.db
+
+# Registros temporales de errores
+error-backend.txt
+error_backend.txt
+
+# Configuración local del backend
+/src/main/resources/application-local.properties
